@@ -1,0 +1,207 @@
+
+<% layout("/layouts/boilerplate") -%>
+    <div class="row mt-3">
+        <div class="col-10 offset-1">
+            <h3 class="mb-4">Welcome, <%= newuser.username %>!</h3>
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active text-dark" id="trips-tab" data-bs-toggle="tab"
+                        data-bs-target="#trips" type="button">My Stays</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link text-dark" id="listings-tab" data-bs-toggle="tab" data-bs-target="#listings"
+                        type="button">My Listings</button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3" id="myTabContent">
+
+                <div class="tab-pane fade show active" id="trips" role="tabpanel">
+                    <% if(myBookings.length===0) { %>
+                        <div class="alert alert-secondary">
+                            You haven't booked any trips yet. <a href="/listings" class="alert-link">Start
+                                exploring!</a>
+                        </div>
+                        <% } else { %>
+                            <div class="row">
+                                <% for(let booking of myBookings) { %>
+                                    <div class="card col-4 ms-3 mb-3 border-secondary">
+                                        <div class="card-header bg-transparent border-secondary">
+                                            <b>
+                                                <%= booking.listing.title %>
+                                            </b>
+                                        </div>
+                                        <div class="card-body text-secondary mt-2">
+                                            <p class="card-text">
+                                                📅 <b>Check-in:</b>
+                                                <%= booking.checkIn.toDateString() %><br>
+                                                    📅 <b>Check-out:</b>
+                                                    <%= booking.checkOut.toDateString() %>
+                                            </p>
+                                            <p class="card-text">
+                                                💰 <b>Total:</b> &#8377; <%= booking.totalPrice.toLocaleString("en-IN")
+                                                    %>
+                                            </p>
+                                            <p>
+                                                <span
+                                                    class="badge rounded-pill p-2 <%= booking.status === 'confirmed' ? 'bg-success' : 'bg-warning text-dark' %>">
+                                                    <%= booking.status %>
+                                                </span>
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <% } %>
+                            </div>
+                            <% } %>
+                </div>
+
+                <div class="tab-pane fade mb-5" id="listings" role="tabpanel">
+
+                    <% if(allListings.length===0) { %>
+                        <div class="alert alert-secondary mt-3">
+                            You don't have any listings. <a href="/listings/new" class="alert-link">Add your Listing
+                                now!</a>
+                        </div>
+                        <% } else { %>
+
+                            <ul class="nav nav-pills mb-3 mt-3 justify-content-center" id="listing-subtabs"
+                                role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active rounded-pill" id="pills-homes-tab"
+                                        data-bs-toggle="pill" data-bs-target="#pills-homes" type="button">
+                                        <i class="fa-solid fa-house"></i> Homes (<%= myHomes.length %>)
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill" id="pills-exp-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-exp" type="button">
+                                        <i class="fa-solid fa-ticket"></i> Experiences (<%= myExperiences.length %>)
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link rounded-pill" id="pills-serv-tab" data-bs-toggle="pill"
+                                        data-bs-target="#pills-serv" type="button">
+                                        <i class="fa-solid fa-bell-concierge"></i> Services (<%= myServices.length %>)
+                                    </button>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="pills-tabContent">
+
+                                <div class="tab-pane fade show active" id="pills-homes" role="tabpanel">
+                                    <% if(myHomes.length===0) { %>
+                                        <p class="text-center text-muted mt-3">No Homes listed yet.</p>
+                                        <% } else { %>
+                                            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+                                                <% for(let listing of myHomes) { %>
+                                                    <div class="col">
+                                                        <div class="card h-100 p-2 shadow-sm">
+                                                            <img src="<%= listing.image.url %>" class="card-img-top"
+                                                                alt="listing image"
+                                                                style="height: 200px; object-fit: cover; border-radius: 10px;">
+                                                            <div class="card-body mt-1">
+                                                                <h5 class="card-title text-truncate">
+                                                                    <%= listing.title %>
+                                                                </h5>
+                                                                <p class="card-text text-muted mb-2"><small>
+                                                                        <%= listing.location %>, &nbsp;<%=
+                                                                                listing.country %>
+                                                                    </small></p>
+
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mt-3">
+                                                                    <a href="/listings/<%= listing._id %>"
+                                                                        class="btn btn-sm btn-outline-dark">View</a>
+                                                                    <a href="/listings/<%= listing._id %>/edit"
+                                                                        class="btn btn-sm btn-dark edit-btn px-3">Edit</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <% } %>
+                                </div>
+
+                                <div class="tab-pane fade" id="pills-exp" role="tabpanel">
+                                    <% if(myExperiences.length===0) { %>
+                                        <p class="text-center text-muted mt-3">No Experiences listed yet.</p>
+                                        <% } else { %>
+                                            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+                                                <% for(let listing of myExperiences) { %>
+                                                    <div class="col">
+                                                        <div class="card h-100 p-2 shadow-sm">
+                                                            <img src="<%= listing.image.url %>" class="card-img-top"
+                                                                alt="listing image"
+                                                                style="height: 200px; object-fit: cover; border-radius: 10px;">
+                                                            <div class="card-body mt-1">
+                                                                <h5 class="card-title text-truncate">
+                                                                    <%= listing.title %>
+                                                                </h5>
+                                                                <p class="card-text text-muted mb-2"><small>
+                                                                        <%= listing.location %>, &nbsp;<%=
+                                                                                listing.country %>
+                                                                    </small></p>
+
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mt-3">
+                                                                    <a href="/listings/<%= listing._id %>"
+                                                                        class="btn btn-sm btn-outline-dark">View</a>
+                                                                    <a href="/listings/<%= listing._id %>/edit"
+                                                                        class="btn btn-sm btn-dark edit-btn px-3">Edit</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <% } %>
+                                </div>
+
+                                <div class="tab-pane fade" id="pills-serv" role="tabpanel">
+                                    <% if(myServices.length===0) { %>
+                                        <p class="text-center text-muted mt-3">No Services listed yet.</p>
+                                        <% } else { %>
+                                            <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
+                                                <% for(let listing of myServices) { %>
+                                                    <div class="col">
+                                                        <div class="card h-100 p-2 shadow-sm">
+                                                            <img src="<%= listing.image.url %>" class="card-img-top"
+                                                                alt="listing image"
+                                                                style="height: 200px; object-fit: cover; border-radius: 10px;">
+                                                            <div class="card-body mt-1">
+                                                                <h5 class="card-title text-truncate">
+                                                                    <%= listing.title %>
+                                                                </h5>
+                                                                <p class="card-text text-muted mb-2"><small>
+                                                                        <%= listing.location %>, &nbsp;<%=
+                                                                                listing.country %>
+                                                                    </small></p>
+
+                                                                <div
+                                                                    class="d-flex justify-content-between align-items-center mt-3">
+                                                                    <a href="/listings/<%= listing._id %>"
+                                                                        class="btn btn-sm btn-outline-dark">View</a>
+                                                                    <a href="/listings/<%= listing._id %>/edit"
+                                                                        class="btn btn-sm btn-dark edit-btn px-3">Edit</a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <% } %>
+                                            </div>
+                                            <% } %>
+                                </div>
+
+                            </div>
+                            <% } %>
+                </div>
+
+            </div>
+        </div>
+    </div>

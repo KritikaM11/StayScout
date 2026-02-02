@@ -1,0 +1,154 @@
+   .navbar {
+       height: 10rem;
+       background-color: white;
+       margin-bottom: 2rem;
+       margin-top: 1rem;
+   }
+   
+   .fa-compass {
+       color: #F08D25;
+       font-size: 2.5rem;
+   }
+
+   .nav-link {
+       color: #222222 !important;
+   }
+
+    #navbarNavAltMarkup{
+    display: flex;
+    flex-direction: column;
+   }
+
+   .navtop{
+    display: flex;
+    align-items: center;
+    gap: 19rem;
+   }
+    
+    .search-bar {
+       display: flex;
+       align-items: center;
+       background: white;
+       border-radius: 999px;
+       width: 900px;
+       margin: auto;
+       padding: 5px;
+       box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+       height: 60px;
+   }
+
+   .search-item {
+       display: flex;
+       flex-direction: column;
+       padding: 0 20px;
+       flex: 1;
+   }
+
+   .label {
+       font-size: 12px;
+       font-weight: 600;
+       color: #444;
+   }
+
+   .search-item input {
+       border: none;
+       outline: none;
+       font-size: 14px;
+       color: #777;
+       background: transparent;
+   }
+
+   .divider {
+       width: 1px;
+       height: 40px;
+       background: #e0e0e0;
+   }
+
+   .search-btn {
+       background:  #F08D25;
+       border: none;
+       color: white;
+       width: 50px;
+       height: 50px;
+       border-radius: 50%;
+       font-size: 18px;
+       cursor: pointer;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+   }
+
+   .search-btn:hover {
+
+    background: #F08D25;
+   }
+
+   .search-item-wrapper {
+       flex: 1;
+       border-radius: 999px;
+       transition: background 0.25s ease;
+   }
+
+   .search-item-wrapper:hover {
+       background: #f0f0f0;
+   }
+
+   .search-item {
+       display: flex;
+       flex-direction: column;
+       padding: 4px 20px;
+   }
+
+   .search-item-wrapper {
+       cursor: pointer;
+   }
+
+   .search-item-wrapper:hover input {
+       background: transparent;
+   }
+
+   .search-item-wrapper:active {
+       background: #e8e8e8;
+   }
+
+   .icons {
+       text-align: center;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 1.8rem;
+   }
+
+   .icons a {
+       color: inherit;
+       /* takes parent text color */
+       text-decoration: none;
+   }
+
+   .icons i {
+       font-size: 30px;
+   }
+
+   .homeicon, .ballonicon, .bellicon {
+        display: inline-block;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: 0.2s all;
+        
+        /* THE FIX: Give everyone the padding and a transparent border by default */
+        padding-bottom: 10px; 
+        border-bottom: 3px solid transparent; 
+    }
+
+    /* 2. Hover effects */
+    .homeicon:hover, .ballonicon:hover, .bellicon:hover {
+        opacity: 1;
+    }
+
+    /* 3. Active state: Only change the color and opacity, NOT the size */
+    .active-category {
+        opacity: 1 !important;
+        font-weight: 600;
+        border-color: black !important; /* We just turn the transparent border black */
+    }
+    

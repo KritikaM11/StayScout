@@ -1,0 +1,173 @@
+<style>
+    .navbtn {
+        border: 2px solid green;
+        border-radius: 16px;
+        margin-left: 0.5rem;
+    }
+
+    .navbtnred {
+        border: 2px solid #F08D25;
+    }
+
+    .lowernav {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background-color: #F08D25;
+        /* Dark background (Black) */
+        color: #fff;
+        /* White Text */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        /* Ensures capital letter */
+    }
+
+    /* Fix: Target the specific profile button inside dropdown */
+    .navbar .nav-item.dropdown .nav-link:focus,
+    .navbar .nav-item.dropdown .nav-link.show {
+        outline: none !important;
+        box-shadow: 0 0 5px rgba(254, 66, 77, 0.5) !important;
+        /* GLOW COLOR (Red) */
+        border-color: #F08D25 !important;
+        /* BORDER COLOR (Red) */
+    }
+
+    /* Agar Red color chahiye click par */
+    .dropdown-item:active {
+        background-color:#F08D25 !important;
+        /* Aapka Red Color */
+        color: #fff !important;
+        /* Text White */
+    }
+</style>
+
+
+<% let currCat=(typeof category !='undefined' && category !='undefined' ) ? category : 'Homes' %>
+
+    <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
+        <div class="container-fluid">
+
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navtop">
+
+                    <div class="navbar-nav d-flex flex-row align-items-center ">
+                        <a href="/listings">
+                            <img src="/logo.png" alt="logo" width="150px" style="object-fit: contain;">
+                        </a>
+                    </div>
+
+                    <div class="icons">
+                        <div class="home">
+                            <div class="homeicon <%= currCat === 'Homes' ? 'active-category' : '' %>">
+                                <a href="/listings?category=Homes" style="text-decoration: none; color: inherit;">
+                                    <i class="fa-solid fa-house"></i> Homes
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="experience">
+                            <div class="ballonicon <%= currCat === 'Experiences' ? 'active-category' : '' %>">
+                                <a href="/listings?category=Experiences" style="text-decoration: none; color: inherit;">
+                                    <i class="fa-solid fa-user"></i> Experiences
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="services">
+                            <div class="bellicon <%= currCat === 'Services' ? 'active-category' : '' %>">
+                                <a href="/listings?category=Services" style="text-decoration: none; color: inherit;">
+                                    <i class="fa-solid fa-bell-concierge"></i> Services
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="navbar-nav ms-auto align-items-center">
+                        <% if(!newuser) { %>
+                            <a class="nav-link" href="/listings/new">Add new Listings</a>
+                            <b><a class="nav-link navbtn" aria-current="page" href="/signup">Sign Up</a></b>
+                            <b><a class="nav-link navbtn" href="/login">Login</a></b>
+                            <% } %>
+
+                                <% if(newuser) { %>
+                                    <div class="nav-item dropdown ms-5">
+                                        <a class="nav-link d-flex align-items-center gap-3 border border-2 rounded-pill px-3 py-1 shadow hover-effect"
+                                            href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
+                                            style="background-color: white; color: black; transition: all 0.3s ease;">
+
+                                            <i class="fa-solid fa-bars fs-4"></i>
+
+                                            <div class="user-avatar ">
+                                                <%= newuser.username[0] %>
+                                            </div>
+                                        </a>
+
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2"
+                                            style="border-radius: 15px; border: none; min-width: 200px;">
+                                            <li>
+                                                <h6 class="dropdown-header bg-light py-3 border-bottom">
+                                                    Hello, <b class="text-dark">
+                                                        <%= newuser.username %>
+                                                    </b>
+                                                </h6>
+                                            </li>
+
+                                            <li><a class="dropdown-item py-3 px-4" href="/profile"><i
+                                                        class="fa-solid fa-gauge me-2"></i> My Dashboard</a></li>
+                                            <li><a class="dropdown-item py-3 px-4" href="/listings/new"><i
+                                                        class="fa-solid fa-plus me-2"></i>Add new Listing</a></li>
+
+                                            <li>
+                                                <hr class="dropdown-divider my-0">
+                                            </li>
+
+                                            <li><a class="dropdown-item py-3 px-4 text-danger fw-bold" href="/logout"><i
+                                                        class="fa-solid fa-right-from-bracket me-2"></i> Log out</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <% } %>
+                    </div>
+
+                </div>
+
+                <!-- Search navbar -->
+                <form class="search-bar" action="/listings" method="GET">
+
+                    <div class="search-item-wrapper">
+                        <div class="search-item">
+                            <span class="label" style="margin-bottom: 2px;">Where</span>
+                            <input type="text" name="search" value="<%= typeof search != 'undefined' ? search : '' %>"
+                                placeholder="Search destination" class="search-input">
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="search-item-wrapper">
+                        <div class="search-item">
+                            <span class="label">Category</span>
+                            <select name="category" class="form-select border-0"
+                                style="font-size: 0.9rem; font-weight: 500; padding-left: 0; cursor: pointer;">
+                                <option value="Homes" <%=currCat=='Homes' ? 'selected' : '' %>>Homes</option>
+                                <option value="Experiences" <%=currCat=='Experiences' ? 'selected' : '' %>>Experiences
+                                </option>
+                                <option value="Services" <%=currCat=='Services' ? 'selected' : '' %>>Services</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+
+            </div>
+        </div>
+    </nav>

@@ -1,0 +1,95 @@
+body {
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    background-color: #F08D25 !important;
+    /* Yahan apna pasandida color code dalein */
+    color: white !important;
+    /* Text ka color (optional) */
+}
+
+.f-info {
+    margin-bottom: 0;
+    height: 8rem;
+    background-color: #F7F7F7;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: space-evenly;
+    flex-direction: column;
+}
+
+.f-info-links {
+    width: 100%;
+}
+
+.f-info-socials {
+    width: 100%;
+    font-size: 1.2rem;
+}
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+
+/* cards */
+
+.listing-card {
+    border: none !important;
+    margin-bottom: 1.5rem;
+}
+
+.card img {
+    border-radius: 3% !important;
+    width: 100% !important;
+    object-fit: cover !important;
+}
+
+.card-body {
+    padding: 0 !important;
+}
+
+.card-text p {
+    font-weight: 400 !important;
+}
+
+.listing-link {
+    text-decoration: none !important;
+}
+
+.card-img-overlay {
+    opacity: 0;
+}
+
+.card-img-overlay:hover {
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* show-card */
+.show-img {
+    height: 30vh;
+    border-radius: 2% !important;
+}
+
+.btns {
+
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn {
+    width: 6vw;
+    background-color: #F08D25 !important;
+    border: none !important;
+}
