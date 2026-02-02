@@ -104,15 +104,16 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("https://stayscout-fdc8.onrender.com/" , (req,res)=>{
-    res.redirect("/listings");
-})
+
 //routes
 app.use("/listings", listing);
 app.use("/listings/:id/reviews", review);
 app.use("/", user);
 app.use("/listings/:id/book", bookingRouter);
 
+app.use("/" , (req,res)=>{
+    res.redirect("/listings");
+})
 //for all other paths
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Invalid Request!"));
