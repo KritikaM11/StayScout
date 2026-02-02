@@ -35,7 +35,7 @@ export const index = async (req, res) => {
 
 export const create = (req, res) => {
     const { category } = req.query;
-    res.render("Listings/new", { category });
+    res.render("listings/new", { category });
 }
 
 export const add = async (req, res, next) => {
@@ -92,7 +92,7 @@ export const show = async (req, res) => {
         req.flash("error", "Listing you requested for does not exist!");
         res.redirect("/listings");
     }
-    res.render("Listings/show", { listing });
+    res.render("listings/show", { listing });
 }
 
 export const edit = async (req, res) => {
@@ -110,7 +110,7 @@ export const edit = async (req, res) => {
         "/upload/w_300"
     );
 
-    res.render("Listings/edit", { listing, originalimgurl });
+    res.render("listings/edit", { listing, originalimgurl });
 }
 
 export const update = async (req, res) => {
