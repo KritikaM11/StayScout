@@ -4,9 +4,10 @@ import { sampleListings, sampleExperiences , sampleServices} from "./data.js"
 import { Listing } from "../models/listing.js";
 import { Review } from "../models/reviews.js";
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/StayScout";
+const connecturl = "mongodb+srv://kmittal864_db_user:ix0aIVUIDcbWpSpU@cluster0.nxkxihj.mongodb.net/?appName=Cluster0";
+
 async function main() {
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(connecturl);
 }
 main().then(() => {
     console.log("connected to the database");
