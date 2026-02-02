@@ -104,6 +104,9 @@ app.use((req, res, next) => {
     next();
 })
 
+app.use("https://stayscout-fdc8.onrender.com/" , (req,res)=>{
+    res.redirect("/listings");
+})
 //routes
 app.use("/listings", listing);
 app.use("/listings/:id/reviews", review);
