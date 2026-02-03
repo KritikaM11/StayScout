@@ -1,5 +1,6 @@
 import { Listing } from "../models/listing.js";
 import fetch from "node-fetch";
+import opencage from 'opencage-api-client';
 
 export const index = async (req, res) => {
     let { category, search } = req.query;
@@ -37,64 +38,53 @@ export const create = (req, res) => {
     const { category } = req.query;
     res.render("listings/new", { category });
 }
+
 export const add = async (req, res, next) => {
     try {
         const listing = new Listing(req.body.listing);
-        
-        // 1. Prepare the URL
-        const query = encodeURIComponent(req.body.listing.location);
-        const geoURL = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`;
-
-        // 2. Fetch Coordinates (with Error Handling)
-        const response = await fetch(geoURL, {
-            headers: {
-                "User-Agent": "WonderList/1.0 (student project)" 
-            }
-        });
-
-        // 3. Check if the API actually responded nicely
-        if (!response.ok) {
-            throw new Error("Map Service Unavailable");
-        }
-
-        const data = await response.json();
-
-        // 4. Handle "Location Not Found"
-        if (!data.length) {
-            req.flash("error", "Location not found. Please enter a valid place.");
-            return res.redirect("/listings/new");
-        }
-
-        // 5. Save Coordinates
-        listing.geometry = {
-            type: "Point",
-            coordinates: [
-                parseFloat(data[0].lon),
-                parseFloat(data[0].lat)
-            ]
-        };
-
-        // 6. Handle Image Upload
-        if (req.file) {
-            let url = req.file.path;
-            let filename = req.file.filename;
-            listing.image = { url, filename };
-        }
-        
         listing.owner = req.user._id;
 
-        // 7. Save to Database
-        let savedListing = await listing.save();
-        console.log(savedListing);
-        
+        // Image Handling
+        if (req.file) {
+            listing.image = { url: req.file.path, filename: req.file.filename };
+        }
+
+        // OPENCAGE GEOCODING
+        // Note: Ye process.env se key uthayega
+        const data = await opencage.geocode({
+            q: req.body.listing.location,
+            key: process.env.OPENCAGE_API_KEY
+        });
+
+        // Check if location found
+        if (data.status.code === 200 && data.results.length > 0) {
+            const place = data.results[0];
+            listing.geometry = {
+                type: "Point",
+                // OpenCage returns .lng and .lat
+                coordinates: [place.geometry.lng, place.geometry.lat]
+            };
+        } else {
+            // Agar location nahi mili to Default (New Delhi)
+            console.log("Location not found, using default.");
+            listing.geometry = { type: "Point", coordinates: [77.209, 28.613] };
+        }
+
+        await listing.save();
         req.flash("success", "New Listing created!");
         res.redirect("/listings");
 
     } catch (err) {
-        // THIS CATCH BLOCK PREVENTS THE CRASH
-        console.error("Error in 'add' listing:", err);
-        req.flash("error", "Something went wrong (Map API or Database). Please try again.");
-        res.redirect("/listings/new");
+        console.log("Geocoding Error:", err.message);
+        // Error aaye to bhi listing save ho jayegi (Default coordinates ke sath)
+        const listing = new Listing(req.body.listing);
+        listing.owner = req.user._id;
+        if (req.file) listing.image = { url: req.file.path, filename: req.file.filename };
+        listing.geometry = { type: "Point", coordinates: [77.209, 28.613] };
+        await listing.save();
+
+        req.flash("success", "Listing created (Map check failed but saved).");
+        res.redirect("/listings");
     }
 };
 
