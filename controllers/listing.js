@@ -37,46 +37,66 @@ export const create = (req, res) => {
     const { category } = req.query;
     res.render("listings/new", { category });
 }
-
 export const add = async (req, res, next) => {
-    const listing = new Listing(req.body.listing);
-    const query = encodeURIComponent(req.body.listing.location);
+    try {
+        const listing = new Listing(req.body.listing);
+        
+        // 1. Prepare the URL
+        const query = encodeURIComponent(req.body.listing.location);
+        const geoURL = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`;
 
-    // THIS IS WHERE YOU EXTRACT COORDINATES
-    const geoURL = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
-    const response = await fetch(geoURL, {
-        headers: {
-            "User-Agent": "WonderList/1.0 (student project)",
+        // 2. Fetch Coordinates (with Error Handling)
+        const response = await fetch(geoURL, {
+            headers: {
+                "User-Agent": "WonderList/1.0 (student project)" 
+            }
+        });
+
+        // 3. Check if the API actually responded nicely
+        if (!response.ok) {
+            throw new Error("Map Service Unavailable");
         }
-    });
-    const data = await response.json();
-    if (!data.length) {
-        req.flash("error", "Location not found. Please enter a valid place.");
-        return res.redirect("/listings/new");
+
+        const data = await response.json();
+
+        // 4. Handle "Location Not Found"
+        if (!data.length) {
+            req.flash("error", "Location not found. Please enter a valid place.");
+            return res.redirect("/listings/new");
+        }
+
+        // 5. Save Coordinates
+        listing.geometry = {
+            type: "Point",
+            coordinates: [
+                parseFloat(data[0].lon),
+                parseFloat(data[0].lat)
+            ]
+        };
+
+        // 6. Handle Image Upload
+        if (req.file) {
+            let url = req.file.path;
+            let filename = req.file.filename;
+            listing.image = { url, filename };
+        }
+        
+        listing.owner = req.user._id;
+
+        // 7. Save to Database
+        let savedListing = await listing.save();
+        console.log(savedListing);
+        
+        req.flash("success", "New Listing created!");
+        res.redirect("/listings");
+
+    } catch (err) {
+        // THIS CATCH BLOCK PREVENTS THE CRASH
+        console.error("Error in 'add' listing:", err);
+        req.flash("error", "Something went wrong (Map API or Database). Please try again.");
+        res.redirect("/listings/new");
     }
-
-    listing.geometry = {
-        type: "Point",
-        coordinates: [
-            parseFloat(data[0].lon),
-            parseFloat(data[0].lat)
-        ]
-    };
-
-    let url = req.file.path;
-    let filename = req.file.filename;
-    listing.owner = req.user._id;
-    listing.image = { url, filename };
-
-    // let category = req.body.category;
-    // listing.category = category;
-
-    let savedListing = await listing.save();
-
-    console.log(savedListing);
-    req.flash("success", "New Listing created!");
-    res.redirect("/listings");
-}
+};
 
 export const show = async (req, res) => {
     const { id } = req.params;
