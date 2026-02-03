@@ -46,7 +46,8 @@ export const add = async (req, res, next) => {
     const geoURL = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
     const response = await fetch(geoURL, {
         headers: {
-            "User-Agent": "StayScout/1.0 (student project)"
+            "User-Agent": "StayScout/1.0 (student project)",
+            "Referer": "http://localhost:8080"
         }
     });
     const data = await response.json();
