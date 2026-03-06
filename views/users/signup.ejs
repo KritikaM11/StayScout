@@ -1,32 +1,38 @@
 <% layout("/layouts/boilerplate") -%>
-    <h1 class="col-6 offset-3">SignUp for Stayscout</h1>
-    <div class="row">
-        <div class="col-6 offset-3 mt-4">
-            <form action="/signup" method="POST" novalidate class="needs-validation">
-                <div class="mb-3">
-                    <label for="text" class="form-label">Username</label> <br>
-                    <input name="username" id="username" type="text" class="form-control" required>
-                    <div class="valid-feedback">
-                        Looks good!
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label> <br>
-                    <input name="email" id="email" type="email" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label> <br>
-                    <input name="password" id="password" type="password" class="form-control" required>
+<div class="row mt-4 mb-4">
+    <div class="col-12 col-md-6 offset-md-3">
+        <h1 class="mb-4">SignUp for Stayscout</h1>
+        
+        <form action="/signup" method="POST" novalidate class="needs-validation shadow-sm p-4 rounded-4 border bg-white">
+            <div class="mb-3">
+                <label for="username" class="form-label fw-bold">Username</label>
+                <input name="username" id="username" type="text" class="form-control px-3 py-2" placeholder="Choose a username" required>
+                <div class="valid-feedback">Looks good!</div>
+            </div>
 
-                </div>
-                <button class="btn btn-success"> SignUp</button>
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Email</label>
+                <input name="email" id="email" type="email" class="form-control px-3 py-2" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label fw-bold">Password</label>
+                <input name="password" id="password" type="password" class="form-control px-3 py-2" placeholder="Create a password" required>
+            </div>
+            
+            <button class="btn btn-success w-100 py-2 fw-bold mb-3">Sign Up</button>
 
-                <hr>
-                <div class="mt-3 mb-3">
-                    <a href="/auth/google/signup" class="btn btn-outline-dark w-100">
-                     <i class="fa-brands fa-google"></i> Sign Up with Google
-                    </a>
-                </div>
-            </form>
-        </div>
+            <div class="text-center mb-3 text-muted">OR</div>
+
+            <div>
+                <a href="/auth/google/signup" class="btn btn-outline-dark w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fa-brands fa-google"></i> Sign Up with Google
+                </a>
+            </div>
+
+            <div class="mt-4 text-center">
+                <p class="mb-0">Already have an account? <a href="/login" class="text-decoration-none fw-bold" style="color: #F08D25;">Login</a></p>
+            </div>
+        </form>
     </div>
+</div>

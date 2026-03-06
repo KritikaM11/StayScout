@@ -12,7 +12,7 @@
             </li>
         </ul>
 
-        <div class="tab-content mt-3" id="myTabContent">
+        <div class="tab-content mt-3 mb-4" id="myTabContent">
 
             <div class="tab-pane fade show active" id="trips" role="tabpanel">
                 <% if(myBookings.length === 0) { %>
@@ -20,7 +20,7 @@
                         You haven't booked any trips yet. <a href="/listings" class="alert-link">Start exploring!</a>
                     </div>
                 <% } else { %>
-                    <div class="row">
+                    <div class="row row-cols-lg-3 row-cols-md-2 row-cols-1 g-4">
                         <% for(let booking of myBookings) { %>
                             <% 
                                 // Calculate if the booking is in the past
@@ -29,23 +29,25 @@
                                 let isPast = booking.checkOut < today;
                             %>
                             
-                            <div class="card col-4 ms-3 mb-3 border-secondary <%= isPast ? 'opacity-50 bg-light' : 'shadow-sm' %>" style="transition: 0.3s;">
-                                <div class="card-header bg-transparent border-secondary">
-                                    <b><%= booking.listing.title %></b>
-                                </div>
-                                <div class="card-body text-secondary mt-2">
-                                    <p class="card-text">
-                                        📅 <b>Check-in:</b> <%= booking.checkIn.toDateString() %><br>
-                                        📅 <b>Check-out:</b> <%= booking.checkOut.toDateString() %>
-                                    </p>
-                                    <p class="card-text">
-                                        💰 <b>Total:</b> &#8377; <%= booking.totalPrice.toLocaleString("en-IN") %>
-                                    </p>
-                                    <p>
-                                        <span class="badge rounded-pill p-2 <%= isPast ? 'bg-secondary' : (booking.status === 'confirmed' ? 'bg-success' : 'bg-warning text-dark') %>">
-                                            <%= isPast ? 'Completed' : booking.status %>
-                                        </span>
-                                    </p>
+                            <div class="col">
+                                <div class="card h-100 border-secondary <%= isPast ? 'opacity-50 bg-light' : 'shadow-sm' %>" style="transition: 0.3s;">
+                                    <div class="card-header bg-transparent border-secondary">
+                                        <b class="text-truncate d-block"><%= booking.listing.title %></b>
+                                    </div>
+                                    <div class="card-body text-secondary mt-2 p-2">
+                                        <p class="card-text">
+                                            📅 <b>Check-in:</b> <%= booking.checkIn.toDateString() %><br>
+                                            📅 <b>Check-out:</b> <%= booking.checkOut.toDateString() %>
+                                        </p>
+                                        <p class="card-text">
+                                            💰 <b>Total:</b> &#8377; <%= booking.totalPrice.toLocaleString("en-IN") %>
+                                        </p>
+                                        <p>
+                                            <span class="badge rounded-pill p-2 <%= isPast ? 'bg-secondary' : (booking.status === 'confirmed' ? 'bg-success' : 'bg-warning text-dark') %>">
+                                                <%= isPast ? 'Completed' : booking.status %>
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         <% } %>
@@ -59,23 +61,23 @@
                         You don't have any listings. <a href="/listings/new" class="alert-link">Add your Listing now!</a>
                     </div>
                 <% } else { %>
-                    <ul class="nav nav-pills mb-3 mt-3 justify-content-center" id="listing-subtabs" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active rounded-pill" id="pills-homes-tab" data-bs-toggle="pill" data-bs-target="#pills-homes" type="button">
-                                <i class="fa-solid fa-house"></i> Homes (<%= myHomes.length %>)
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill" id="pills-exp-tab" data-bs-toggle="pill" data-bs-target="#pills-exp" type="button">
-                                <i class="fa-solid fa-ticket"></i> Experiences (<%= myExperiences.length %>)
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link rounded-pill" id="pills-serv-tab" data-bs-toggle="pill" data-bs-target="#pills-serv" type="button">
-                                <i class="fa-solid fa-bell-concierge"></i> Services (<%= myServices.length %>)
-                            </button>
-                        </li>
-                    </ul>
+                    <ul class="nav nav-pills mb-3 mt-3 gap-2 mobile-scroll-tabs" id="listing-subtabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill px-4" id="pills-homes-tab" data-bs-toggle="pill" data-bs-target="#pills-homes" type="button">
+            <i class="fa-solid fa-house"></i> Homes (<%= myHomes.length %>)
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill px-4" id="pills-exp-tab" data-bs-toggle="pill" data-bs-target="#pills-exp" type="button">
+            <i class="fa-solid fa-ticket"></i> Experiences (<%= myExperiences.length %>)
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-pill px-4" id="pills-serv-tab" data-bs-toggle="pill" data-bs-target="#pills-serv" type="button">
+            <i class="fa-solid fa-bell-concierge"></i> Services (<%= myServices.length %>)
+        </button>
+    </li>
+</ul>
 
                     <div class="tab-content" id="pills-tabContent">
                         

@@ -84,13 +84,57 @@ body {
 }
 
 .btns {
-
     display: flex;
     gap: 10px;
 }
 
 .edit-btn {
-    width: 6vw;
     background-color: #F08D25 !important;
     border: none !important;
+    white-space: nowrap; /* Forces text to always stay on one horizontal line */
+    padding: 0.3rem 1.2rem !important;
+}
+/* --- FLASH MESSAGE MOBILE FIX --- */
+.alert {
+    width: fit-content !important; /* Hugs the text perfectly when it's short */
+    max-width: 90% !important; /* Forces it to stop expanding near the screen edges */
+    margin: 0.5rem auto !important; /* Centers the box horizontally with spacing */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Keeps text on the left and 'X' on the right */
+    gap: 1rem; 
+    /* REMOVED: white-space: nowrap; -> This allows long text to safely drop to the next line */
+}
+
+/* Fix the close button positioning */
+.alert .btn-close {
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0; /* Prevents the 'X' button from getting squished by long text */
+}
+
+/* --- MOBILE SCROLLING TABS FIX --- */
+.mobile-scroll-tabs {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important; /* Strictly forces a single horizontal line */
+    overflow-x: auto !important; /* Enables horizontal swiping */
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iPhones */
+    padding-bottom: 8px; /* Breathing room for the scrollbar */
+    justify-content: flex-start !important; /* Prevents 'Homes' from being cut off on the left */
+}
+
+/* Hide the ugly default scrollbar but keep functionality */
+.mobile-scroll-tabs::-webkit-scrollbar {
+    display: none; 
+}
+
+/* Force the buttons inside the tabs to behave normally */
+.mobile-scroll-tabs .nav-link {
+    white-space: nowrap !important; /* Prevents text from stacking */
+    border-radius: 50px !important;
+    height: auto !important; 
+    display: inline-block !important; /* Stops flexbox from stretching them into giant circles */
 }
