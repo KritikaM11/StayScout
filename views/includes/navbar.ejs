@@ -43,7 +43,7 @@
 
     /* Agar Red color chahiye click par */
     .dropdown-item:active {
-        background-color:#F08D25 !important;
+        background-color: #F08D25 !important;
         /* Aapka Red Color */
         color: #fff !important;
         /* Text White */
@@ -90,15 +90,37 @@
                             </div>
                         </div>
                     </div>
-                    <div class="navbar-nav ms-auto align-items-center">
+                    <div class="navbar-nav flex-row align-items-center gap-2">
                         <% if(!newuser) { %>
-                            <a class="nav-link" href="/listings/new">Add new Listings</a>
-                            <b><a class="nav-link navbtn" aria-current="page" href="/signup">Sign Up</a></b>
-                            <b><a class="nav-link navbtn" href="/login">Login</a></b>
+                            <div class="desktop-auth d-flex flex-row align-items-center gap-2">
+                                <a class="nav-link d-flex align-items-center" href="/listings/new">
+                                    <span class="add-text">Add new Listings</span>
+                                    <div class="addnewlis"><i class="fa-solid fa-plus add-icon"></i></div>
+                                </a>
+                                <b><a class="nav-link navbtn" aria-current="page" href="/signup">Sign Up</a></b>
+                                <b><a class="nav-link navbtn" href="/login">Login</a></b>
+                            </div>
+
+                            <div class="mobile-auth nav-item dropdown ms-2 me-4">
+                                <a class="nav-link d-flex align-items-center p-2" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false"
+                                    style="color: black; transition: all 0.3s ease; ">
+                                    <i class="fa-solid fa-bars fs-1 "></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2"
+                                    style="border-radius: 15px; border: none; min-width: 180px;">
+                                    <li><a class="dropdown-item fw-bold py-2" href="/signup">Sign Up</a></li>
+                                    <li><a class="dropdown-item py-2" href="/login">Login</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider my-1">
+                                    </li>
+                                    <li><a class="dropdown-item py-2" href="/listings/new">Add new Listing</a></li>
+                                </ul>
+                            </div>
                             <% } %>
 
                                 <% if(newuser) { %>
-                                    <div class="nav-item dropdown ms-5">
+                                   <div class="user-profile-dropdown nav-item dropdown ms-2 me-4">
                                         <a class="nav-link d-flex align-items-center gap-3 border border-2 rounded-pill px-3 py-1 shadow hover-effect"
                                             href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"
                                             style="background-color: white; color: black; transition: all 0.3s ease;">
@@ -154,14 +176,31 @@
 
                     <div class="search-item-wrapper">
                         <div class="search-item">
-                            <span class="label">Category</span>
-                            <select name="category" class="form-select border-0"
-                                style="font-size: 0.9rem; font-weight: 500; padding-left: 0; cursor: pointer;">
-                                <option value="Homes" <%=currCat=='Homes' ? 'selected' : '' %>>Homes</option>
-                                <option value="Experiences" <%=currCat=='Experiences' ? 'selected' : '' %>>Experiences
-                                </option>
-                                <option value="Services" <%=currCat=='Services' ? 'selected' : '' %>>Services</option>
-                            </select>
+                            <span class="label" style="margin-bottom: 2px;">Category</span>
+
+                            <div class="dropdown w-100">
+                                <div class="d-flex align-items-center justify-content-between" data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    style="cursor: pointer; font-size: 0.95rem; font-weight: 500; color: #222222;">
+                                    <span id="selected-category">
+                                        <%= currCat %>
+                                    </span>
+                                    <i class="fa-solid fa-chevron-down" style="font-size: 0.8rem; color: #777;"></i>
+                                </div>
+
+                                <ul class="dropdown-menu shadow-lg border-0 mt-3"
+                                    style="border-radius: 16px; min-width: 150px; padding: 10px 0;">
+                                    <li><a class="dropdown-item py-2 category-option" href="#"
+                                            data-value="Homes">Homes</a></li>
+                                    <li><a class="dropdown-item py-2 category-option" href="#"
+                                            data-value="Experiences">Experiences</a></li>
+                                    <li><a class="dropdown-item py-2 category-option" href="#"
+                                            data-value="Services">Services</a></li>
+                                </ul>
+
+                                <input type="hidden" name="category" id="category-input" value="<%= currCat %>">
+                            </div>
+
                         </div>
                     </div>
 
@@ -171,3 +210,17 @@
             </div>
         </div>
     </nav>
+    <script>
+    document.querySelectorAll('.category-option').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevents the page from jumping
+            const selectedValue = this.getAttribute('data-value');
+            
+            // Update the visible text
+            document.getElementById('selected-category').innerText = selectedValue;
+            
+            // Update the hidden input for the form submission
+            document.getElementById('category-input').value = selectedValue;
+        });
+    });
+</script>

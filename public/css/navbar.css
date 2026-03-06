@@ -1,10 +1,10 @@
    .navbar {
-       height: 10rem;
+       /* height: 10rem; */
+       padding: 1rem 2rem 1.5rem 2rem;
        background-color: white;
        margin-bottom: 2rem;
-       margin-top: 1rem;
    }
-   
+
    .fa-compass {
        color: #F08D25;
        font-size: 2.5rem;
@@ -14,24 +14,28 @@
        color: #222222 !important;
    }
 
-    #navbarNavAltMarkup{
-    display: flex;
-    flex-direction: column;
+   #navbarNavAltMarkup {
+       display: flex;
+       flex-direction: column;
+       width: 100%;
+       gap: 0;
    }
 
-   .navtop{
-    display: flex;
-    align-items: center;
-    gap: 19rem;
+   .navtop {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       width: 100%;
    }
-    
-    .search-bar {
+
+   .search-bar {
        display: flex;
        align-items: center;
        background: white;
        border-radius: 999px;
-       width: 900px;
-       margin: auto;
+       width: 100%;
+       max-width: 800px;
+       margin: 0 auto;
        padding: 5px;
        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
        height: 60px;
@@ -65,7 +69,7 @@
    }
 
    .search-btn {
-       background:  #F08D25;
+       background: #F08D25;
        border: none;
        color: white;
        width: 50px;
@@ -80,13 +84,13 @@
 
    .search-btn:hover {
 
-    background: #F08D25;
+       background: #F08D25;
    }
 
    .search-item-wrapper {
        flex: 1;
        border-radius: 999px;
-       transition: background 0.25s ease;
+       transition: 0.25s ease;
    }
 
    .search-item-wrapper:hover {
@@ -111,6 +115,7 @@
        background: #e8e8e8;
    }
 
+
    .icons {
        text-align: center;
        display: flex;
@@ -129,26 +134,148 @@
        font-size: 30px;
    }
 
-   .homeicon, .ballonicon, .bellicon {
-        display: inline-block;
-        cursor: pointer;
-        opacity: 0.7;
-        transition: 0.2s all;
-        
-        /* THE FIX: Give everyone the padding and a transparent border by default */
-        padding-bottom: 10px; 
-        border-bottom: 3px solid transparent; 
-    }
+   .homeicon,
+   .ballonicon,
+   .bellicon {
+       display: inline-block;
+       cursor: pointer;
+       opacity: 0.7;
+       transition: 0.2s all;
 
-    /* 2. Hover effects */
-    .homeicon:hover, .ballonicon:hover, .bellicon:hover {
-        opacity: 1;
-    }
+       /* THE FIX: Give everyone the padding and a transparent border by default */
+       padding-bottom: 10px;
+       border-bottom: 3px solid transparent;
+   }
 
-    /* 3. Active state: Only change the color and opacity, NOT the size */
-    .active-category {
-        opacity: 1 !important;
-        font-weight: 600;
-        border-color: black !important; /* We just turn the transparent border black */
-    }
-    
+   /* 2. Hover effects */
+   .homeicon:hover,
+   .ballonicon:hover,
+   .bellicon:hover {
+       opacity: 1;
+   }
+
+   /* 3. Active state: Only change the color and opacity, NOT the size */
+   .active-category {
+       opacity: 1 !important;
+       font-weight: 600;
+       border-color: black !important;
+       /* We just turn the transparent border black */
+   }
+
+   /* Default state (Desktop): Hide the icon */
+   .addnewlis {
+       display: none;
+   }
+
+   .mobile-auth {
+       display: none !important;
+   }
+
+   /* Mobile/Tablet state (<= 900px) */
+   @media (max-width: 1000px) {
+
+       /* Hide the text */
+       .add-text {
+           display: none;
+       }
+
+       .addnewlis {
+           width: 2.5rem;
+           height: 2.5rem;
+           background-color: #4950571c;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+       }
+
+       .addnewlis:hover {
+           transform: scale(1.2);
+       }
+
+       /* Show the + icon */
+       .add-icon {
+           font-size: 1.2rem;
+           color: #F08D25;
+       }
+   }
+
+   @media (max-width: 800px) {
+       .icons {
+           display: none;
+       }
+
+       div.desktop-auth.d-flex {
+           display: none !important;
+       }
+
+       /* Show the hamburger dropdown */
+       .mobile-auth {
+           display: block !important;
+       }
+   }
+
+   @media (max-width: 455px) {
+
+       .search-item-wrapper {
+           min-width: 0;
+       }
+       .search-item {
+           padding: 4px 8px !important;
+       }
+       .custom-category-select,
+       .search-item input {
+           min-width: 0;
+           width: 100%;
+           text-overflow: ellipsis;
+           /* Adds '...' if the text is too long */
+           white-space: nowrap;
+           overflow: hidden;
+           font-size: 0.85rem;
+       }
+
+       .search-btn {
+           width: 42px !important;
+           height: 42px !important;
+           min-width: 42px !important;
+           font-size: 15px;
+       }
+   }
+
+   /* Soft rounded corners for all dropdown menus */
+   .dropdown-menu {
+       border-radius: 16px !important;
+       border: 1px solid #ebebeb !important;
+       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+   }
+
+   /* Custom hover effect matching your orange theme */
+   .dropdown-item {
+       font-weight: 500;
+       transition: all 0.2s ease;
+   }
+
+   .dropdown-item:hover,
+   .dropdown-item:focus {
+       background-color: #fff4e6 !important;
+       /* Soft pastel orange background */
+       color: #F08D25 !important;
+       /* Bold orange text */
+   }
+
+   .mobile-auth .dropdown-menu,
+   .user-profile-dropdown .dropdown-menu {
+       position: absolute !important;
+       right: 0;
+       top: 100%;
+       z-index: 1050;
+       background-color: white;
+   }
+
+   /* Remove the default glowing box-shadow when clicked */
+   .mobile-auth .nav-link:focus,
+   .mobile-auth .nav-link.show,
+   .user-profile-dropdown .nav-link:focus,
+   .user-profile-dropdown .nav-link.show {
+       box-shadow: none !important;
+   }
