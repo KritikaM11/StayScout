@@ -96,14 +96,22 @@ body {
 }
 /* --- FLASH MESSAGE MOBILE FIX --- */
 .alert {
-    width: fit-content !important; /* Hugs the text perfectly when it's short */
-    max-width: 90% !important; /* Forces it to stop expanding near the screen edges */
-    margin: 0.5rem auto !important; /* Centers the box horizontally with spacing */
+    position: fixed !important;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+
+    width: fit-content !important; 
+    max-width: 90% !important; 
+    margin: 0.5rem auto !important;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Keeps text on the left and 'X' on the right */
+    justify-content: space-between; 
     gap: 1rem; 
-    /* REMOVED: white-space: nowrap; -> This allows long text to safely drop to the next line */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important; /* Adds a nice 3D floating shadow */
+    border-radius: 12px;
+    animation: slideDownFade 0.4s ease-out forwards;
 }
 
 /* Fix the close button positioning */
@@ -112,6 +120,16 @@ body {
     padding: 0 !important;
     margin: 0 !important;
     flex-shrink: 0; /* Prevents the 'X' button from getting squished by long text */
+}
+@keyframes slideDownFade {
+    0% {
+        top: -50px;
+        opacity: 0;
+    }
+    100% {
+        top: 10px;
+        opacity: 1;
+    }
 }
 
 /* --- MOBILE SCROLLING TABS FIX --- */
