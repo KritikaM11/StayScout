@@ -21,7 +21,7 @@ router.get("/login", (req, res) => {
 
 router.post("/login", isSaveRedirectUrl, passport.authenticate("local", { failureRedirect: "/login", failureFlash: true }),
     (req, res) => {
-        req.flash("success", "Welcome to the WonderLust! You are logged in!");
+        req.flash("success", "Welcome to StayScout! You are logged in!");
         const redirectUrl = res.locals.redirectUrl || "/listings";
         res.redirect(redirectUrl);
     })
