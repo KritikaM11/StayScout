@@ -32,7 +32,12 @@ const bookingSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    razorpayOrderId: {
+    type: String,
+    required: true,
+    unique: true
+    },
 });
 
 export const Booking = mongoose.model("Booking", bookingSchema);

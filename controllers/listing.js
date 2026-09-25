@@ -1,5 +1,4 @@
 import { Listing } from "../models/listing.js";
-import fetch from "node-fetch";
 import opencage from 'opencage-api-client';
 
 export const index = async (req, res) => {

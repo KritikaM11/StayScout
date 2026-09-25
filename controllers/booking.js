@@ -1,5 +1,6 @@
 import { Listing } from "../models/listing.js";
 import { Booking } from "../models/booking.js";
+import crypto from "crypto";
 import Razorpay from "razorpay";
 
 // Initialize Razorpay with your keys
@@ -56,7 +57,8 @@ export const createBooking = async (req, res) => {
             checkIn: start,
             checkOut: end,
             totalPrice: totalPrice,
-            status: "pending"
+            status: "pending",
+            razorpayOrderId: order.id
         });
         await newBooking.save();
 
@@ -77,14 +79,70 @@ export const createBooking = async (req, res) => {
 
 export const verifyPayment = async (req, res) => {
     const { id } = req.params;
-    const { bookingId, paymentId } = req.query;
 
-    const booking = await Booking.findById(bookingId);
-    if (booking) {
-        booking.status = "confirmed";
-        await booking.save();
+    const {
+        bookingId,
+        razorpay_payment_id,
+        razorpay_order_id,
+        razorpay_signature
+    } = req.query;
+
+    const booking = await Booking.findOne({
+        _id: bookingId,
+        booker: req.user._id,
+        listing: id
+    });
+
+    if (!booking) {
+        req.flash("error", "Booking not found.");
+        return res.redirect(`/listings/${id}`);
     }
 
+    if (
+        !razorpay_payment_id ||
+        !razorpay_order_id ||
+        !razorpay_signature
+    ) {
+        req.flash("error", "Payment verification data is missing.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    if (booking.razorpayOrderId !== razorpay_order_id) {
+        req.flash("error", "Invalid payment order.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    // Razorpay signature:
+    // HMAC-SHA256(order_id + "|" + payment_id, key_secret)
+    const generatedSignature = crypto
+        .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest("hex");
+
+    const expectedSignature = Buffer.from(generatedSignature, "utf8");
+    const receivedSignature = Buffer.from(razorpay_signature, "utf8");
+
+    const isValid =
+        expectedSignature.length === receivedSignature.length &&
+        crypto.timingSafeEqual(
+            expectedSignature,
+            receivedSignature
+        );
+
+    if (!isValid) {
+        req.flash("error", "Payment verification failed.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    // Prevent unnecessary repeated confirmation
+    if (booking.status === "confirmed") {
+        req.flash("success", "Booking is already confirmed.");
+        return res.redirect(`/listings/${id}`);
+    }
+
+    booking.status = "confirmed";
+    await booking.save();
+
     req.flash("success", "Payment Successful! Booking Confirmed.");
-    res.redirect(`/listings/${id}`);
+    return res.redirect(`/listings/${id}`);
 };

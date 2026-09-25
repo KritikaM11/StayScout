@@ -33,17 +33,16 @@ export const userlogout = (req, res, next) => {
 }
 
 export const renderProfile = async (req, res) => {
-    // 1. Find all bookings made BY the current user
-    // We populate 'listing' so we can show the title/image of the place they booked
+    
     const myBookings = await Booking.find({ booker: req.user._id }).populate("listing");
+    const validBookings = myBookings.filter(booking => booking.listing);
     const allListings = await Listing.find({ owner: req.user._id });
-    // 2. Find all listings OWNED by the current user
     const myHomes = allListings.filter(l => l.category === "Homes");
     const myExperiences = allListings.filter(l => l.category === "Experiences");
     const myServices = allListings.filter(l => l.category === "Services");
 
     res.render("users/profile.ejs", {
-        myBookings,
+        myBookings: validBookings,
         myHomes,
         myExperiences,
         myServices,
