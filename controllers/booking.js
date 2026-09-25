@@ -14,8 +14,23 @@ export const createBooking = async (req, res) => {
     const { checkIn, checkOut } = req.body.booking;
 
     const listing = await Listing.findById(id);
+    if (!listing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
     const start = new Date(checkIn);
     const end = new Date(checkOut);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (start < today) {
+        req.flash("error", "Check-in date cannot be in the past!");
+        return res.redirect(`/listings/${id}`);
+    }
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        req.flash("error", "Invalid booking dates!");
+        return res.redirect(`/listings/${id}`);
+    }
 
     if (start >= end) {
         req.flash("error", "Check-out date must be after Check-in date!");
@@ -26,7 +41,6 @@ export const createBooking = async (req, res) => {
         listing: id,
         status: { $ne: "cancelled" }, // Ignore cancelled bookings
         $or: [
-            // Logic: (StartA < EndB) and (EndA > StartB) means overlap
             { checkIn: { $lt: end }, checkOut: { $gt: start } }
         ]
     });
@@ -35,13 +49,11 @@ export const createBooking = async (req, res) => {
         req.flash("error", "Dates are already booked! Please choose different dates.");
         return res.redirect(`/listings/${id}`);
     }
-    // 1. Calculate Price
-    const dayDiff = Math.ceil(Math.abs(end - start) / (1000 * 60 * 60 * 24));
+
+    const dayDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     const totalPrice = dayDiff * listing.price;
 
-    // 2. Create Razorpay Order
-    // Razorpay needs amount in "paise" (multiply by 100)
-    const options = {
+     const options = {
         amount: totalPrice * 100,
         currency: "INR",
         receipt: `receipt_${Date.now()}`,
@@ -50,7 +62,6 @@ export const createBooking = async (req, res) => {
     try {
         const order = await razorpay.orders.create(options);
 
-        // 3. Save Booking to DB (Pending)
         const newBooking = new Booking({
             listing: id,
             booker: req.user._id,
