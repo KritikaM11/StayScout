@@ -26,17 +26,20 @@ const bookingSchema = new Schema({
     },
     status: {
         type: String,
-        enum: ["pending", "confirmed", "cancelled"], 
+        enum: ["pending", "confirmed", "cancelled"],
         default: "pending"
     },
     createdAt: {
         type: Date,
         default: Date.now
     },
+    expiresAt: {
+        type: Date
+    },
     razorpayOrderId: {
-    type: String,
-    required: true,
-    unique: true
+        type: String,
+        required: true,
+        unique: true
     },
 });
 

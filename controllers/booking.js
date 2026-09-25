@@ -39,10 +39,18 @@ export const createBooking = async (req, res) => {
 
     const existingBooking = await Booking.findOne({
         listing: id,
-        status: { $ne: "cancelled" }, // Ignore cancelled bookings
+
         $or: [
-            { checkIn: { $lt: end }, checkOut: { $gt: start } }
-        ]
+            { status: "confirmed" },
+
+            {
+                status: "pending",
+                expiresAt: { $gt: new Date() }
+            }
+        ],
+
+        checkIn: { $lt: end },
+        checkOut: { $gt: start }
     });
 
     if (existingBooking) {
@@ -53,7 +61,7 @@ export const createBooking = async (req, res) => {
     const dayDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
     const totalPrice = dayDiff * listing.price;
 
-     const options = {
+    const options = {
         amount: totalPrice * 100,
         currency: "INR",
         receipt: `receipt_${Date.now()}`,
@@ -69,7 +77,8 @@ export const createBooking = async (req, res) => {
             checkOut: end,
             totalPrice: totalPrice,
             status: "pending",
-            razorpayOrderId: order.id
+            razorpayOrderId: order.id,
+            expiresAt: new Date(Date.now() + 15 * 60 * 1000)
         });
         await newBooking.save();
 
@@ -108,6 +117,17 @@ export const verifyPayment = async (req, res) => {
         req.flash("error", "Booking not found.");
         return res.redirect(`/listings/${id}`);
     }
+    if (
+        booking.status === "pending" &&
+        booking.expiresAt &&
+        booking.expiresAt < new Date()
+    ) {
+        booking.status = "cancelled";
+        await booking.save();
+
+        req.flash("error", "Payment session expired. Please book again.");
+        return res.redirect(`/listings/${id}`);
+    }
 
     if (
         !razorpay_payment_id ||
@@ -123,8 +143,6 @@ export const verifyPayment = async (req, res) => {
         return res.redirect(`/listings/${id}`);
     }
 
-    // Razorpay signature:
-    // HMAC-SHA256(order_id + "|" + payment_id, key_secret)
     const generatedSignature = crypto
         .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
         .update(`${razorpay_order_id}|${razorpay_payment_id}`)
