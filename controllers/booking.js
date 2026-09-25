@@ -162,16 +162,46 @@ export const verifyPayment = async (req, res) => {
         req.flash("error", "Payment verification failed.");
         return res.redirect(`/listings/${id}`);
     }
+    try {
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
 
-    // Prevent unnecessary repeated confirmation
-    if (booking.status === "confirmed") {
-        req.flash("success", "Booking is already confirmed.");
+        if (payment.order_id !== booking.razorpayOrderId) {
+            req.flash("error", "Payment does not belong to this booking.");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        if (payment.amount !== booking.totalPrice * 100) {
+            req.flash("error", "Payment amount mismatch.");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        if (payment.currency !== "INR") {
+            req.flash("error", "Invalid payment currency.");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        if (payment.status !== "captured") {
+            req.flash("error", "Payment has not been captured.");
+            return res.redirect(`/listings/${id}`);
+        }
+        if (booking.status === "confirmed") {
+            req.flash("success", "Booking is already confirmed.");
+            return res.redirect(`/listings/${id}`);
+        }
+
+        booking.status = "confirmed";
+        await booking.save();
+
+        req.flash("success", "Payment Successful! Booking Confirmed.");
+        return res.redirect(`/listings/${id}`);
+    } catch (err) {
+        console.error("Razorpay verification error:", err);
+
+        req.flash(
+            "error",
+            "Unable to verify payment. Please contact support."
+        );
+
         return res.redirect(`/listings/${id}`);
     }
-
-    booking.status = "confirmed";
-    await booking.save();
-
-    req.flash("success", "Payment Successful! Booking Confirmed.");
-    return res.redirect(`/listings/${id}`);
 };
